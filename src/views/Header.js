@@ -8,7 +8,7 @@ import { Header, Left, Right, Body } from 'native-base';
 
 import ReactNavigationHeader from 'react-navigation/lib-rn/views/Header';
 import addNavigationHelpers from 'react-navigation/lib-rn/addNavigationHelpers';
-import NavigationPropTypes from 'react-navigation/lib-rn/PropTypes';
+// import NavigationPropTypes from 'react-navigation/lib-rn/PropTypes';
 import HeaderStyleInterpolator from 'react-navigation/lib-rn/views/HeaderStyleInterpolator';
 
 import type {
@@ -24,6 +24,17 @@ type SubViewProps = NavigationSceneRendererProps & {
 // NativeBase patched header sub-components
 import HeaderTitle from './HeaderTitle';
 import HeaderBackButton from './HeaderBackButton';
+
+const extractSceneRendererProps = (props) => ({
+    index: props.index,
+    layout: props.layout,
+    navigationState: props.navigationState,
+    position: props.position,
+    progress: props.progress,
+    scene: props.scene,
+    navigation: props.navigation,
+    scenes: props.scenes,
+});
 
 class CustomNavigationHeader extends ReactNavigationHeader {
   // Custom _renderTitleComponent() which uses NativeBase patched <HeaderTitle>
@@ -183,7 +194,7 @@ class CustomNavigationHeader extends ReactNavigationHeader {
     if (this.props.mode === 'float') {
       const scenesProps: Array<NavigationSceneRendererProps> = this.props.scenes
         .map((scene: NavigationScene, index: number) => ({
-          ...NavigationPropTypes.extractSceneRendererProps(this.props),
+          ...extractSceneRendererProps(this.props),
           scene,
           index,
           navigation: addNavigationHelpers({
@@ -195,7 +206,7 @@ class CustomNavigationHeader extends ReactNavigationHeader {
       appBar = scenesProps.map(this._renderHeader, this);
     } else {
       appBar = this._renderHeader({
-        ...NavigationPropTypes.extractSceneRendererProps(this.props),
+        ...extractSceneRendererProps(this.props),
         position: new Animated.Value(this.props.scene.index),
         progress: new Animated.Value(0),
       });
